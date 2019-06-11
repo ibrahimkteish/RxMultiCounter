@@ -10,17 +10,17 @@ import Foundation
 import RxSwift
 
 extension ObservableType where Element == Void {
-	func incrementSelected() -> Observable<Action> {
-		return map { Action.incrementSelected }
+  func incrementSelected(state: Observable<AppState>) -> Observable<AppAction> {
+		return withLatestFrom(state).map { state in AppAction.rootAction(.increment(state.selected!)) }
 	}
 
-	func decrementSelected() -> Observable<Action> {
-		return map { Action.decrementSelected }
+  func decrementSelected(state: Observable<AppState>) -> Observable<AppAction> {
+    return withLatestFrom(state).map { state in AppAction.rootAction(.decrement(state.selected!)) }
 	}
 }
 
 extension ObservableType where Element == [Any] {
-	func selectNil() -> Observable<Action> {
-		return map { _ in Action.select(nil) }
+	func selectNil() -> Observable<AppAction> {
+    return map { _ in AppAction.rootAction(.select(nil))} //.select(nil) }
 	}
 }

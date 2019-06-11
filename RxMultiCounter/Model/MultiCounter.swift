@@ -10,70 +10,55 @@ import Foundation
 import RxSwift
 import DifferenceKit
 
-enum Action {
-	case add
-	case remove(UUID)
-	case increment(UUID)
-	case decrement(UUID)
-	case incrementSelected
-	case decrementSelected
-	case select(UUID?)
+enum RootAction {
+  case add
+  case remove(UUID)
+  case increment(UUID)
+  case decrement(UUID)
+  case select(UUID?)
 }
 
-struct State: Codable, Equatable {
-	var order: [UUID] = []
-	var counters: [UUID: Int] = [:]
-	var selected: UUID?
+enum DetailAction {
+  case incrementSelected
+  case decrementSelected
+  case select(UUID?)
 }
 
-func update(state: State, action: Action) -> State {
-	var result = state
-	switch action {
-	case .add:
-		let id = UUID()
-		result.order.append(id)
-		result.counters[id] = 0
-	case let .remove(id):
-		result.order = state.order.filter { $0 != id }
-		result.counters.removeValue(forKey: id)
-		if state.selected == id {
-			result.selected = nil
-		}
-	case let .increment(id):
-		guard let value = state.counters[id] else { break }
-		result.counters[id] = value + 1
-	case let .decrement(id):
-		guard let value = state.counters[id] else { break }
-		result.counters[id] = value - 1
-	case .incrementSelected:
-		guard let id = state.selected else { break }
-		guard let value = state.counters[id] else { break }
-		result.counters[id] = value + 1
-	case .decrementSelected:
-		guard let id = state.selected else { break }
-		guard let value = state.counters[id] else { break }
-		result.counters[id] = value - 1
-	case let .select(id):
-		result.selected = id
-	}
-	return result
+enum AppAction {
+  case rootAction(RootAction)
+  case detailAction(DetailAction)
 }
 
-extension ObservableType where Element == State {
+struct RootState: Codable, Equatable {
+  var order: [UUID] = []
+  var counters: [UUID: Int] = [:]
+}
+
+struct DetailState: Codable, Equatable {
+  var counters: Int = 0
+}
+
+struct AppState: Codable, Equatable {
+  var rootState: RootState = .init()
+  var detailState: DetailState = .init()
+  var selected: UUID?
+}
+
+extension ObservableType where Element == AppState {
 	func deselect() -> Observable<Void> {
 		return filter { $0.selected == nil }
 			.map { _ in }
 	}
 
 	func counterText(for id: UUID) -> Observable<String> {
-		return map { $0.counters[id] }
+		return map { $0.rootState.counters[id] }
 			.map { $0 != nil ? "\($0!)" : "" }
 	}
 
 	func counterTextForSelected() -> Observable<String> {
 		return map { state in
 			guard let selected = state.selected else { return "" }
-			guard let value = state.counters[selected] else { return "" }
+			guard let value = state.rootState.counters[selected] else { return "" }
 			return "\(value)"
 		}
 	}
@@ -91,6 +76,6 @@ extension ObservableType where Element == State {
 	}
 }
 
-typealias CounterStore = Store<State, Action>
+typealias CounterStore = Store<AppState, AppAction>
 
 extension UUID: Differentiable { }

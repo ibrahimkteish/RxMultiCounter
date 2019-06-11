@@ -11,9 +11,9 @@ import RxSwift
 
 class Store<State, Action> {
 
-	init(initialState: State, reducer: @escaping (State, Action) -> State) {
+	init(initialState: State, reducer: Reducer<State, Action>) {
 		state = actions
-			.scan(initialState, accumulator: reducer)
+      .scan(into: initialState, accumulator: reducer.reduce)
 			.startWith(initialState)
 			.share(replay: 1)
 	}

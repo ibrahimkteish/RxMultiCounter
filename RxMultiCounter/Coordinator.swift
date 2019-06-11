@@ -12,7 +12,61 @@ import RxCocoa
 
 class Coordinator {
 	init(rootViewController: UISplitViewController) {
-		store = CounterStore(initialState: initialState, reducer: update)
+    
+    let rootReducer = Reducer<(RootState, UUID?), RootAction>.init { (state, action) in
+      
+      var (rootState, selected) = state
+      defer { state =  (rootState, selected) }
+      
+      switch action {
+        
+      case .add:
+        let id = UUID()
+        rootState.order.append(id)
+        rootState.counters[id] = 0
+      case let .remove(id):
+        rootState.order = rootState.order.filter { $0 != id }
+        rootState.counters.removeValue(forKey: id)
+        if selected == id {
+          selected = nil
+        }
+      case let .increment(id):
+        guard let value = rootState.counters[id] else { break }
+        rootState.counters[id] = value + 1
+      case let .decrement(id):
+        guard let value = rootState.counters[id] else { break }
+        rootState.counters[id] = value - 1
+      case let .select(id):
+        selected = id
+      }
+    }
+    
+    let detailReducer = Reducer<(DetailState, UUID?), DetailAction>.init { (state, action) in
+      var (detailState, selected) = state
+      defer { state = (detailState, selected) }
+      switch action {
+        
+      case .incrementSelected:
+        guard selected != nil else { break }
+//        guard let value = state.counters else { break }
+        detailState.counters = detailState.counters + 1
+      case .decrementSelected:
+        guard selected != nil else { break }
+//        guard let value = state.counters[id] else { break }
+        detailState.counters = detailState.counters - 1
+      case let .select(id):
+        selected = id
+      }
+    }
+    
+  
+    let appReducer: Reducer<AppState, AppAction> = rootReducer.lift(state: both(lens(\.rootState), lens(\.selected)),
+                                                                    action: AppAction.prism.rootAction)
+      <> detailReducer.lift(state: both(lens(\.detailState), lens(\.selected)), action: AppAction.prism.detailAction)
+    
+    let reducer = appReducer
+    
+		store = CounterStore(initialState: initialState, reducer: reducer)
 		rootViewController.delegate = self
 		let masterNav = rootViewController.children[0] as! UINavigationController
 		let master = masterNav.topViewController as! MasterTableViewController
@@ -56,11 +110,13 @@ extension Coordinator: UISplitViewControllerDelegate {
 	}
 }
 
-private var initialState: State {
-	guard let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return State() }
+private var initialState: AppState {
+  let defaultState = AppState(rootState: RootState(order: [], counters: [:]), detailState: DetailState(counters: 0), selected: nil)
+  
+  guard let dir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return defaultState }
 	let url = dir.appendingPathComponent("save.plist")
-	guard let data = try? Data(contentsOf: url) else { return State() }
-	guard var state = try? PropertyListDecoder().decode(State.self, from: data) else { return State() }
-	state.selected = nil
+	guard let data = try? Data(contentsOf: url) else { return defaultState }
+  guard let state = try? PropertyListDecoder().decode(AppState.self, from: data) else { return defaultState }
+//  state.selected = nil
 	return state
 }

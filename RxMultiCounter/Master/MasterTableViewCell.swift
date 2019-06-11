@@ -22,15 +22,15 @@ class MasterTableViewCell: UITableViewCell {
 	}
 
 	func configure(with store: CounterStore, id: UUID) {
-		increment.rx.tap
-			.map { Action.increment(id) }
-			.bind(to: store)
-			.disposed(by: bag)
+    increment.rx.tap
+      .map { AppAction.rootAction(.increment(id)) }
+      .bind(to: store)
+      .disposed(by: bag)
 
-		decrement.rx.tap
-			.map { Action.decrement(id) }
-			.bind(to: store)
-			.disposed(by: bag)
+    decrement.rx.tap
+      .map { AppAction.rootAction(.decrement(id)) }
+      .bind(to: store)
+      .disposed(by: bag)
 
 		store.state
 			.counterText(for: id)

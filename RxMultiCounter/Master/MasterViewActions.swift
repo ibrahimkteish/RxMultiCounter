@@ -10,19 +10,29 @@ import Foundation
 import RxSwift
 
 extension ObservableType where Element == Void {
-	func add() -> Observable<Action> {
-		return map { Action.add }
+	func add() -> Observable<AppAction> {
+		return map { AppAction.rootAction(.add) }
 	}
 }
 
 extension ObservableType where Element == IndexPath {
-	func select(state: Observable<State>) -> Observable<Action> {
-		return withLatestFrom(state.map { $0.order }) { $1[$0.row] }
-			.map { Action.select($0) }
+  
+  func selectedObject(state: Observable<AppState>) -> Observable<UUID?> {
+   return withLatestFrom(state.map { $0.rootState.order }) { $1[$0.row] }
+  }
+  
+	func select(state: Observable<AppState>) -> Observable<AppAction> {
+		return selectedObject(state: state)
+			.map { AppAction.rootAction(.select($0)) }
 	}
 
-	func delete(state: Observable<State>) -> Observable<Action> {
-		return withLatestFrom(state.map { $0.order }) { $1[$0.row] }
-			.map { Action.remove($0) }
+  func select2(state: Observable<AppState>) -> Observable<AppAction> {
+    return selectedObject(state: state)
+      .map { AppAction.detailAction(.select($0)) }
+  }
+	
+  func delete(state: Observable<AppState>) -> Observable<AppAction> {
+		return withLatestFrom(state.map { $0.rootState.order }) { $1[$0.row] }
+			.map { AppAction.rootAction(.remove($0)) }
 	}
 }

@@ -23,16 +23,22 @@ class MasterTableViewController: UITableViewController {
 		tableView.delegate = nil
 
 		addBarButtonItem.rx.tap
-			.map { Action.add }
+			.map { AppAction.rootAction(.add) }
 			.bind(to: store)
 			.disposed(by: bag)
 
-		tableView.rx.itemSelected
-			.select(state: store.state)
-			.bind(to: store)
-			.disposed(by: bag)
-
-		tableView.rx.itemDeleted
+      tableView.rx.itemSelected
+        .select(state: store.state)
+        .bind(to: store)
+        .disposed(by: bag)
+      
+      tableView.rx.itemSelected
+        .select2(state: store.state)
+        .bind(to: store)
+        .disposed(by: bag)
+      
+      
+      tableView.rx.itemDeleted
 			.delete(state: store.state)
 			.bind(to: store)
 			.disposed(by: bag)
@@ -43,7 +49,7 @@ class MasterTableViewController: UITableViewController {
 		})
 
 		store.state
-			.map { $0.order }
+			.map { $0.rootState.order }
 			.bind(to: tableView.rx.items(dataSource: dataSource))
 			.disposed(by: bag)
 

@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		09A0CBB4215567D900691097 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09A0CBB3215567D900691097 /* Store.swift */; };
+		0F2B208D22A3FA2500AB0803 /* Reducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F2B208C22A3FA2500AB0803 /* Reducer.swift */; };
+		0FC8801B22B069FD00CCCE44 /* Lenses.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FC8801A22B069FD00CCCE44 /* Lenses.swift */; };
 		41A51D4F2683A294749E97F9 /* Pods_RxMultiCounter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7F0B2A57E5E5FF4B14D23A4E /* Pods_RxMultiCounter.framework */; };
 		7207A1A0215115D400971B5E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7207A19F215115D400971B5E /* AppDelegate.swift */; };
 		7207A1A5215115D500971B5E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7207A1A3215115D500971B5E /* Main.storyboard */; };
@@ -25,6 +27,8 @@
 
 /* Begin PBXFileReference section */
 		09A0CBB3215567D900691097 /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
+		0F2B208C22A3FA2500AB0803 /* Reducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reducer.swift; sourceTree = "<group>"; };
+		0FC8801A22B069FD00CCCE44 /* Lenses.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lenses.swift; sourceTree = "<group>"; };
 		1EFE1B9E2326BE02F316925A /* Pods-RxMultiCounter.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RxMultiCounter.release.xcconfig"; path = "Pods/Target Support Files/Pods-RxMultiCounter/Pods-RxMultiCounter.release.xcconfig"; sourceTree = "<group>"; };
 		7207A19C215115D300971B5E /* RxMultiCounter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RxMultiCounter.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7207A19F215115D400971B5E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -56,6 +60,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0FC8801922B069EC00CCCE44 /* Lenses */ = {
+			isa = PBXGroup;
+			children = (
+				0FC8801A22B069FD00CCCE44 /* Lenses.swift */,
+			);
+			path = Lenses;
+			sourceTree = "<group>";
+		};
 		7207A193215115D100971B5E = {
 			isa = PBXGroup;
 			children = (
@@ -77,6 +89,7 @@
 		7207A19E215115D300971B5E /* RxMultiCounter */ = {
 			isa = PBXGroup;
 			children = (
+				0FC8801922B069EC00CCCE44 /* Lenses */,
 				72FBE4422151DD41005216AF /* RxExtensions */,
 				72FBE4462151E0E5005216AF /* Model */,
 				7207A19F215115D400971B5E /* AppDelegate.swift */,
@@ -96,6 +109,7 @@
 			children = (
 				7244C8142153B3910088D087 /* RxSimpleAnimatableDataSource.swift */,
 				09A0CBB3215567D900691097 /* Store.swift */,
+				0F2B208C22A3FA2500AB0803 /* Reducer.swift */,
 			);
 			path = RxExtensions;
 			sourceTree = "<group>";
@@ -264,8 +278,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				72FBE44F2151E611005216AF /* MasterViewActions.swift in Sources */,
+				0FC8801B22B069FD00CCCE44 /* Lenses.swift in Sources */,
 				72FBE43F2151D54D005216AF /* Coordinator.swift in Sources */,
 				7207A1B42151188800971B5E /* DetailViewController.swift in Sources */,
+				0F2B208D22A3FA2500AB0803 /* Reducer.swift in Sources */,
 				09A0CBB4215567D900691097 /* Store.swift in Sources */,
 				7207A1B6215118C400971B5E /* MasterTableViewController.swift in Sources */,
 				7244C8152153B3910088D087 /* RxSimpleAnimatableDataSource.swift in Sources */,
